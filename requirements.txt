@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+websockets
+deepface
+qdrant-client
+python-multipart
+numpy==1.26.4
+opencv-python==4.8.1.78
+tensorflow==2.10.0
+protobuf==3.19.6
