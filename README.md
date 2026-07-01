@@ -12,19 +12,34 @@ A continuación se muestra el flujo de interacción entre la aplicación móvil 
 
 ```mermaid
 graph TD
-    subgraph Cliente
-        A[Dispositivo Móvil / Flutter] <-->|HTTP & WebSockets| B[Túnel ngrok / Cloudflare]
+    subgraph Cliente ["Cliente"]
+        A["Dispositivo Móvil / Flutter"]
+        B["Túnel ngrok / Cloudflare"]
+        A -->|HTTP & WebSockets| B
+        B -->|HTTP & WebSockets| A
     end
-    subgraph Backend [FastAPI]
-        B <--> C[main.py / FastAPI App]
-        C <-->|WebSocket: /ws/foto/| D[foto_session.py]
-        C -->|Inferencia / Extracción Vectorial| E[DeepFace: ArcFace & RetinaFace]
+
+    subgraph Backend ["Backend (FastAPI)"]
+        C["main.py (FastAPI App)"]
+        D["foto_session.py"]
+        E["DeepFace: ArcFace & RetinaFace"]
+        C -->|WebSocket| D
+        D -->|WebSocket| C
+        C -->|Inferencia / Extracción| E
     end
-    subgraph Base de Datos Vectorial
-        C <-->|Puerto 6333| F[(Qdrant Vector DB)]
-        G[indexador.py] -->|L2 Normalización y Carga Masiva| F
-        G -->|Escaneo de fotos base| H[bd_rostros/]
+
+    subgraph BD ["Base de Datos Vectorial"]
+        F[("Qdrant Vector DB")]
+        G["indexador.py"]
+        H["bd_rostros/"]
+        G -->|L2 Normalización y Carga Masiva| F
+        G -->|Escaneo de fotos base| H
     end
+
+    B --> C
+    C --> B
+    C -->|Puerto 6333| F
+    F -->|Resultados| C
 ```
 
 ---
